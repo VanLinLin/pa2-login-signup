@@ -15,16 +15,13 @@ This is the course 418Y programming assignment 2. I need to build a MERN applica
 ## Features
 - Fill in first name, last name, username and password, then click `Signup` to create a new user document in MongoDB.
 - Fill in username and password, then click `Login` to check the credentials against the database.
-- The backend answers with a status code for each case: `201` when a user is created, `200` when the login is correct, and `401` when the username is not found or the password is wrong.
-
-## Known Issues / Unfinished
-- Passwords are stored as plain text. A real application should hash them before saving.
-- Signup does not check yet whether the username is already taken.
-- The forms do not show the server's response messages on the page yet.
-- The routes do not catch database errors yet, so a connection problem crashes the request instead of returning `500`.
+- Signup refuses a username that already exists in the database.
+- Both forms refuse empty fields.
+- Both forms display the message sent back by the server, and display a message instead of crashing when the server cannot be reached.
+- The backend answers with a status code for each case: `201` created, `200` login correct, `400` missing fields, `401` wrong username or password, `409` duplicate username, `500` database or server error.
 
 ## AI Use Disclosure
 
 **Tool:** Claude
 
-**Used for:** Reviewing my code and debugging. I wrote all of the application code myself; Claude read it, pointed out the mistakes, and I fixed them. Claude also wrote the code comments and drafted this README from the code I had already written.
+**Used for:** Reviewing my code and debugging. I wrote all of the application code myself; Claude read it, pointed out the mistakes, and I fixed them.
