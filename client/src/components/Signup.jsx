@@ -7,24 +7,38 @@ function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // stores the message returned by the server
+  const [message, setMessage] = useState("");
+
   // runs when the Signup button is clicked
   const handleSubmit = async (e) => {
     // stop the browser from reloading the page
     e.preventDefault();
 
-    // send the four fields to the Express server as JSON
-    await fetch("http://localhost:9000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        f_name,
-        l_name,
-        username,
-        password,
-      }),
-    });
+    try {
+      // send the four fields to the Express server as JSON
+      await fetch("http://localhost:9000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          f_name,
+          l_name,
+          username,
+          password,
+        }),
+      })
+        // change the server response from JSON into a JavaScript object
+        .then((response) => response.json())
+        // show the message returned by the server
+        .then((data) => {
+          setMessage(data.message);
+        });
+    } catch (error) {
+      // show an error message if the server cannot be reached
+      setMessage("Could not connect to the server");
+    }
   };
 
   return (
@@ -62,6 +76,9 @@ function Signup() {
 
         <button type="submit">Signup</button>
       </form>
+
+      {/* show the message only when there is one */}
+      {message && <p>{message}</p>}
     </div>
   );
 }
