@@ -1,14 +1,18 @@
 import { useState } from "react";
 
 function Signup() {
+  // one state variable for each input box
   const [f_name, setFName] = useState("");
   const [l_name, setLName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // runs when the Signup button is clicked
   const handleSubmit = async (e) => {
+    // stop the browser from reloading the page
     e.preventDefault();
 
+    // send the four fields to the Express server as JSON
     await fetch("http://localhost:9000/signup", {
       method: "POST",
       headers: {

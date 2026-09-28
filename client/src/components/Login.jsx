@@ -1,12 +1,16 @@
 import { useState } from "react";
 
 function Login() {
+  // one state variable for each input box
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // runs when the Login button is clicked
   const handleSubmit = async (e) => {
+    // stop the browser from reloading the page
     e.preventDefault();
 
+    // send the username and password to the Express server as JSON
     await fetch("http://localhost:9000/login", {
       method: "POST",
       headers: {
