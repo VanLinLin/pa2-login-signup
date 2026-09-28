@@ -43,47 +43,72 @@ app.get("/", (req, res) => {
 
 // Signup: create a new user in MongoDB
 app.post("/signup", async (req, res) => {
-  // take the four fields out of the request body
-  const { f_name, l_name, username, password } = req.body;
+  try {
+    const { f_name, l_name, username, password } = req.body;
 
-  // store the new user as one document in the users collection
-  await users.insertOne({
-    f_name,
-    l_name,
-    username,
-    password,
-  });
+    if (!f_name || !l_name || !username || !password) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
 
-  // 201 means a new resource was created
-  res.status(201).json({
-    message: "User created successfully",
-  });
+    const existingUser = await users.findOne({ username });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message: "Username already exists",
+      });
+    }
+
+    await users.insertOne({
+      f_name,
+      l_name,
+      username,
+      password,
+    });
+
+    res.status(201).json({
+      message: "User created successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
 });
 
 
 // Login: check the username and password against MongoDB
 app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  // look the user up by username only, then compare the password below
-  const user = await users.findOne({
-    username,
-  });
-  
-  if (!user) {
-    // no account with this username
-    return res.status(401).json({
-      message: "Invalid username or password",
-    });
-  }else if (user.password !== password) {
-    // the account exists but the password does not match
-    return res.status(401).json({
-      message: "Invalid username or password",
-    });
-  }else{
-    // username and password are both correct
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    const user = await users.findOne({ username });
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid username or password",
+      });
+    }
+
+    if (user.password !== password) {
+      return res.status(401).json({
+        message: "Invalid username or password",
+      });
+    }
+
     res.status(200).json({
       message: "Login successful",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
     });
   }
 });
